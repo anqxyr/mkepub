@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" prefix="rendition: http://www.ipdf.org/vocab/rendition/#" unique-identifier="uuid_id" version="3.0">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <meta property="dcterms:modified"/>
+    <meta name="cover" content="cover"/>
+    <dc:title/>
+    <dc:creator/>
+    <dc:date/>
+    <dc:identifier id="uuid_id" opf:scheme="uuid"/>
+    <dc:language/>
+  </metadata>
+  <manifest>
+    <item href="stylesheet.css" id="stylesheet" media-type="text/css"/>
+    <item href="toc.ncx" id="toc" media-type="application/x-dtbncx+xml"/>
+    <item href="cover.png" id="cover" media-type="image/png" properties="cover-image"/>
+  </manifest>
+  <spine toc="toc"/>
+</package>
