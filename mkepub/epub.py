@@ -29,8 +29,8 @@ Example usage:
 # Module Imports
 ###############################################################################
 
-import arrow
 import collections
+import datetime
 import itertools
 import logging
 import lxml.etree
@@ -132,7 +132,7 @@ class Book:
 
     def _write_spine(self):
         self.spine = spine = _template('content.opf')
-        now = arrow.utcnow().format('YYYY-MM-DDTHH:mm:ss')
+        now = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
         spine(property='dcterms:modified').text = now
         spine('dc:date').text = now
         spine('dc:title').text = self.title
