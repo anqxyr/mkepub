@@ -166,9 +166,9 @@ class Book:
             self.spine('opf:manifest'),
             'item',
             href='pages/{}.xhtml'.format(page.uid),
-            id=page.uid,
+            id='page' + page.uid,
             mediatype='application/xhtml+xml')
-        _add_node(self.spine('opf:spine'), 'itemref', idref=page.uid)
+        _add_node(self.spine('opf:spine'), 'itemref', idref='page' + page.uid)
 
     def _add_image_to_spine(self, image):
         """"Add the image to the spine of the book."""
@@ -185,7 +185,10 @@ class Book:
 
     def _add_page_to_toc(self, page, node):
         navpoint = _add_node(
-            node, 'navPoint', id=page.uid, playOrder=page.uid.lstrip('0'))
+            node,
+            'navPoint',
+            id='page' + page.uid,
+            playOrder=page.uid.lstrip('0'))
         navlabel = _add_node(navpoint, 'navLabel')
         _add_node(navlabel, 'text').text = page.title
         _add_node(navpoint, 'content', src='pages/{}.xhtml'.format(page.uid))
