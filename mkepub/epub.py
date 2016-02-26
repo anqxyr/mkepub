@@ -48,7 +48,6 @@ log = logging.getLogger(__name__)
 ###############################################################################
 
 Page = collections.namedtuple('Page', 'uid title children')
-Image = collections.namedtuple('Image', 'name type')
 
 
 class Book:
@@ -58,8 +57,8 @@ class Book:
         """"Create new book."""
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = []
-        self.images = []
-        self.uid_generator = map('{:04}'.format, itertools.count(1))
+        self.gen_uid_page = map('{:04}'.format, itertools.count(1))
+        self.gen_uid_image = map('{:04}'.format, itertools.count(1))
 
         self.path = pathlib.Path(self.tempdir.name).resolve()
         (self.path / 'pages').mkdir()
@@ -81,7 +80,7 @@ class Book:
         provided, the page will be added to the root of the book.
         """
         log.info('New page: {}'.format(title))
-        page = Page(next(self.uid_generator), title, [])
+        page = Page(next(self.gen_uid_page), title, [])
         self.root.append(page) if not parent else parent.children.append(page)
         self._write_page(page.uid, title, content)
         return page
@@ -89,11 +88,6 @@ class Book:
     def add_image(self, name, data):
         """Add image file."""
         log.info('New image: {}'.format(name))
-        if name.endswith('.jpg'):
-            media_type = 'image/jpeg'
-        if name.endswith('.png'):
-            media_type = 'image/png'
-        self.images.append(Image(name, media_type))
         with open(str(self.path / 'images' / name), 'wb') as file:
             file.write(data)
 
@@ -136,7 +130,7 @@ class Book:
         xmltree.write(self.path / 'pages' / (uid + '.xhtml'))
 
     def _write_spine(self):
-        spine = _template('content.opf')
+        self.spine = spine = _template('content.opf')
         now = arrow.utcnow().format('YYYY-MM-DDTHH:mm:ss')
         spine(property='dcterms:modified').text = now
         spine('dc:date').text = now
@@ -144,24 +138,10 @@ class Book:
         spine('dc:creator').text = self.author
         spine('dc:language').text = self.language
         spine(id='uuid_id').text = str(uuid.uuid4())
-
         for page in _flatten(self.root):
-            _add_node(
-                spine('opf:manifest'),
-                'item',
-                href='pages/{}.xhtml'.format(page.uid),
-                id=page.uid,
-                mediatype='application/xhtml+xml')
-            _add_node(spine('opf:spine'), 'itemref', idref=page.uid)
-
-        for uid, image in enumerate(self.images):
-            _add_node(
-                spine('opf:manifest'),
-                'item',
-                href='images/' + image.name,
-                id='img{:03}'.format(uid + 1),
-                mediatype=image.type)
-
+            self._add_page_to_spine(page)
+        for image in map(str, self.path.glob('images/*')):
+            self._add_image_to_spine(image)
         spine.write(self.path / 'content.opf')
 
     def _write_container(self):
@@ -174,17 +154,42 @@ class Book:
         toc = _template('toc.ncx')
         toc('ncx:text').text = self.title
         for page in self.root:
-            self._page_to_toc(page, toc('ncx:navMap'))
+            self._add_page_to_toc(page, toc('ncx:navMap'))
         toc.write(self.path / 'toc.ncx')
 
-    def _page_to_toc(self, page, node):
+    ###########################################################################
+
+    def _add_page_to_spine(self, page):
+        """Add the page to the spine of the book."""
+        _add_node(
+            self.spine('opf:manifest'),
+            'item',
+            href='pages/{}.xhtml'.format(page.uid),
+            id=page.uid,
+            mediatype='application/xhtml+xml')
+        _add_node(self.spine('opf:spine'), 'itemref', idref=page.uid)
+
+    def _add_image_to_spine(self, image):
+        """"Add the image to the spine of the book."""
+        if image.endswith('.png'):
+            mediatype = 'image/png'
+        else:
+            mediatype = 'image/jpeg'
+        _add_node(
+            self.spine('opf:manifest'),
+            'item',
+            href='images/' + image,
+            id='img{:03}'.format(next(self.gen_uid_image)),
+            mediatype=mediatype)
+
+    def _add_page_to_toc(self, page, node):
         navpoint = _add_node(
             node, 'navPoint', id=page.uid, playOrder=page.uid.lstrip('0'))
         navlabel = _add_node(navpoint, 'navLabel')
         _add_node(navlabel, 'text').text = page.title
         _add_node(navpoint, 'content', src='pages/{}.xhtml'.format(page.uid))
         for child in page.children:
-            self._page_to_toc(child, navpoint)
+            self._add_page_to_toc(child, navpoint)
 
 
 ###############################################################################
