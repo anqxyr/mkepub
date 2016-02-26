@@ -73,7 +73,7 @@ def template(name):
     """Get file template."""
     return ETreeWrapper(
         lxml.etree.fromstring(
-            pkgutil.get_data('pyscp_ebooks', 'resources/templates/' + name),
+            pkgutil.get_data('mkepub', 'resources/' + name),
             lxml.etree.XMLParser(remove_blank_text=True)),
         namespaces=dict(
             opf='http://www.idpf.org/2007/opf',
