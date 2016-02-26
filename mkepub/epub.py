@@ -146,20 +146,21 @@ class Book:
         spine(id='uuid_id').text = str(uuid.uuid4())
 
         for page in _flatten(self.root):
-            lxml.etree.SubElement(
-                spine('opf:manifest'), 'item',
-                href='pages/{}.xhtml'.format(page.uid), id=page.uid,
-                **{'media-type': 'application/xhtml+xml'})
-            lxml.etree.SubElement(
-                spine('opf:spine'), 'itemref', idref=page.uid)
+            _add_node(
+                spine('opf:manifest'),
+                'item',
+                href='pages/{}.xhtml'.format(page.uid),
+                id=page.uid,
+                mediatype='application/xhtml+xml')
+            _add_node(spine('opf:spine'), 'itemref', idref=page.uid)
 
         for uid, image in enumerate(self.images):
-            lxml.etree.SubElement(
+            _add_node(
                 spine('opf:manifest'),
                 'item',
                 href='images/' + image.name,
                 id='img{:03}'.format(uid + 1),
-                **{'media-type': image.type})
+                mediatype=image.type)
 
         spine.write(self.path / 'content.opf')
 
@@ -177,12 +178,11 @@ class Book:
         toc.write(self.path / 'toc.ncx')
 
     def _page_to_toc(self, page, node):
-        navpoint = lxml.etree.SubElement(
+        navpoint = _add_node(
             node, 'navPoint', id=page.uid, playOrder=page.uid.lstrip('0'))
-        navlabel = lxml.etree.SubElement(navpoint, 'navLabel')
-        lxml.etree.SubElement(navlabel, 'text').text = page.title
-        lxml.etree.SubElement(
-            navpoint, 'content', src='pages/{}.xhtml'.format(page.uid))
+        navlabel = _add_node(navpoint, 'navLabel')
+        _add_node(navlabel, 'text').text = page.title
+        _add_node(navpoint, 'content', src='pages/{}.xhtml'.format(page.uid))
         for child in page.children:
             self._page_to_toc(child, navpoint)
 
@@ -211,6 +211,17 @@ class _ETreeWrapper:
     def write(self, path):
         self.tree.write(str(path), xml_declaration=True,
                         encoding='UTF-8', pretty_print=True)
+
+
+def _add_node(*args, **kwargs):
+    """
+    Add new xml node.
+
+    Wrapper around lxml.etree.SubElement, for better readability.
+    """
+    if 'mediatype' in kwargs:
+        kwargs['media-type'] = kwargs.pop('mediatype')
+    return lxml.etree.SubElement(*args, **kwargs)
 
 
 def _template(name):
