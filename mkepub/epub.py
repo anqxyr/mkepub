@@ -47,56 +47,15 @@ log = logging.getLogger(__name__)
 
 ###############################################################################
 
-
-class ETreeWrapper:
-    """Convinience wrapper around xml trees."""
-
-    def __init__(self, *args, namespaces, **kwargs):
-        self.tree = lxml.etree.ElementTree(*args, **kwargs)
-        self.namespaces = namespaces
-
-    def __call__(self, tag='*', **kwargs):
-        path = './/{}'.format(tag)
-        for key, value in kwargs.items():
-            path += '[@{}="{}"]'.format(key, value)
-        return self.tree.find(path, namespaces=self.namespaces)
-
-    def __getattr__(self, name):
-        return getattr(self.tree, name)
-
-    def write(self, path):
-        self.tree.write(str(path), xml_declaration=True,
-                        encoding='UTF-8', pretty_print=True)
-
-
-def template(name):
-    """Get file template."""
-    return ETreeWrapper(
-        lxml.etree.fromstring(
-            pkgutil.get_data('mkepub', 'resources/' + name),
-            lxml.etree.XMLParser(remove_blank_text=True)),
-        namespaces=dict(
-            opf='http://www.idpf.org/2007/opf',
-            dc='http://purl.org/dc/elements/1.1/',
-            xhtml='http://www.w3.org/1999/xhtml',
-            ncx='http://www.daisy.org/z3986/2005/ncx/'))
-
-
-def flatten(tree):
-    for item in tree:
-        yield item
-        yield from flatten(item.children)
-
-###############################################################################
-
 Page = collections.namedtuple('Page', 'uid title children')
 Image = collections.namedtuple('Image', 'name type')
 
 
 class Book:
-    """Wrapper around a epub archive."""
+    """EPUB book."""
 
     def __init__(self, **kwargs):
+        """"Create new book."""
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = []
         self.images = []
@@ -109,6 +68,10 @@ class Book:
         self.title = kwargs.get('title', 'Untitled')
         self.language = kwargs.get('language', 'en')
         self.author = kwargs.get('author', 'Unknown Author')
+
+    ###########################################################################
+    # Public Methods
+    ###########################################################################
 
     def add_page(self, title, content, parent=None):
         """
@@ -123,14 +86,8 @@ class Book:
         self._write_page(page.uid, title, content)
         return page
 
-    def _write_page(self, uid, title, content):
-        """Write the contents of the page into an xhtml file."""
-        xmltree = template('page.xhtml')
-        xmltree('xhtml:title').text = title
-        xmltree('xhtml:body').append(lxml.html.fromstring(content))
-        xmltree.write(self.path / 'pages' / (uid + '.xhtml'))
-
     def add_image(self, name, data):
+        """Add image file."""
         log.info('New image: {}'.format(name))
         if name.endswith('.jpg'):
             media_type = 'image/jpeg'
@@ -151,6 +108,7 @@ class Book:
             file.write(data)
 
     def save(self, filename):
+        """Save book to a file."""
         self._write_spine()
         self._write_container()
         self._write_toc()
@@ -166,8 +124,19 @@ class Book:
                     compress_type=zipfile.ZIP_DEFLATED)
         log.info('Book saved: {}'.format(self.title))
 
+    ###########################################################################
+    # Private Methods
+    ###########################################################################
+
+    def _write_page(self, uid, title, content):
+        """Write the contents of the page into an xhtml file."""
+        xmltree = _template('page.xhtml')
+        xmltree('xhtml:title').text = title
+        xmltree('xhtml:body').append(lxml.html.fromstring(content))
+        xmltree.write(self.path / 'pages' / (uid + '.xhtml'))
+
     def _write_spine(self):
-        spine = template('content.opf')
+        spine = _template('content.opf')
         now = arrow.utcnow().format('YYYY-MM-DDTHH:mm:ss')
         spine(property='dcterms:modified').text = now
         spine('dc:date').text = now
@@ -176,7 +145,7 @@ class Book:
         spine('dc:language').text = self.language
         spine(id='uuid_id').text = str(uuid.uuid4())
 
-        for page in flatten(self.root):
+        for page in _flatten(self.root):
             lxml.etree.SubElement(
                 spine('opf:manifest'), 'item',
                 href='pages/{}.xhtml'.format(page.uid), id=page.uid,
@@ -195,13 +164,13 @@ class Book:
         spine.write(self.path / 'content.opf')
 
     def _write_container(self):
-        container = template('container.xml')
+        container = _template('container.xml')
         meta_inf = self.path / 'META-INF'
         meta_inf.mkdir()
         container.write(meta_inf / 'container.xml')
 
     def _write_toc(self):
-        toc = template('toc.ncx')
+        toc = _template('toc.ncx')
         toc('ncx:text').text = self.title
         for page in self.root:
             self._page_to_toc(page, toc('ncx:navMap'))
@@ -216,3 +185,48 @@ class Book:
             navpoint, 'content', src='pages/{}.xhtml'.format(page.uid))
         for child in page.children:
             self._page_to_toc(child, navpoint)
+
+
+###############################################################################
+# Helper Classes and Methods
+###############################################################################
+
+
+class _ETreeWrapper:
+    """Convinience wrapper around xml trees."""
+
+    def __init__(self, *args, namespaces, **kwargs):
+        self.tree = lxml.etree.ElementTree(*args, **kwargs)
+        self.namespaces = namespaces
+
+    def __call__(self, tag='*', **kwargs):
+        path = './/{}'.format(tag)
+        for key, value in kwargs.items():
+            path += '[@{}="{}"]'.format(key, value)
+        return self.tree.find(path, namespaces=self.namespaces)
+
+    def __getattr__(self, name):
+        return getattr(self.tree, name)
+
+    def write(self, path):
+        self.tree.write(str(path), xml_declaration=True,
+                        encoding='UTF-8', pretty_print=True)
+
+
+def _template(name):
+    """Get file template."""
+    return _ETreeWrapper(
+        lxml.etree.fromstring(
+            pkgutil.get_data('mkepub', 'resources/' + name),
+            lxml.etree.XMLParser(remove_blank_text=True)),
+        namespaces=dict(
+            opf='http://www.idpf.org/2007/opf',
+            dc='http://purl.org/dc/elements/1.1/',
+            xhtml='http://www.w3.org/1999/xhtml',
+            ncx='http://www.daisy.org/z3986/2005/ncx/'))
+
+
+def _flatten(tree):
+    for item in tree:
+        yield item
+        yield from _flatten(item.children)
