@@ -53,20 +53,21 @@ Page = collections.namedtuple('Page', 'uid title children')
 class Book:
     """EPUB book."""
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self, title='Untitled', author='Unknown Author', language='en'):
         """"Create new book."""
+        self.title = title
+        self.author = author
+        self.language = language
+
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = []
         self.gen_uid_page = map('{:04}'.format, itertools.count(1))
-        self.gen_uid_image = map('{:04}'.format, itertools.count(1))
+        self.gen_uid_image = map('{:03}'.format, itertools.count(1))
 
         self.path = pathlib.Path(self.tempdir.name).resolve()
         (self.path / 'pages').mkdir()
         (self.path / 'images').mkdir()
-
-        self.title = kwargs.get('title', 'Untitled')
-        self.language = kwargs.get('language', 'en')
-        self.author = kwargs.get('author', 'Unknown Author')
 
     ###########################################################################
     # Public Methods
