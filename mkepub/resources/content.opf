@@ -6,7 +6,7 @@
     <dc:title/>
     <dc:creator/>
     <dc:date/>
-    <dc:identifier id="uuid_id" opf:scheme="uuid"/>
+    <dc:identifier id="uuid_id"/>
     <dc:language/>
   </metadata>
   <manifest>
