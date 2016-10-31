@@ -8,6 +8,9 @@
     <dc:language>{{ lang if lang else 'en' }}</dc:language>
     <dc:date>{{ date[:10] }}</dc:date>
     <meta property="dcterms:modified">{{ date }}</meta>
+    {%- if author %}
+    <dc:creator>{{ author }}</dc:creator>
+    {%- endif %}
     {%- for author in authors %}
     <dc:creator>{{ author }}</dc:creator>
     {%- endfor %}
@@ -33,7 +36,6 @@
     {%- if cover %}
     <itemref idref="cover" linear="no"/>
     {%- endif %}
-    <itemref idref="htmltoc" linear="yes"/>
     {%- for page in pages %}
     <itemref idref="id-{{ page.page_id }}"/>
     {%- endfor %}

@@ -96,7 +96,7 @@ class Book:
             file.write(data)
 
     def set_cover(self, data):
-        """Set the cover image to the given png data."""
+        """Set the cover image to the given data."""
         self._cover = 'cover.' + imghdr.what(None, h=data)
         with open(str(self.path / 'EPUB/covers' / self._cover), 'wb') as file:
             file.write(data)
@@ -110,7 +110,7 @@ class Book:
     def save(self, filename):
         """Save book to a file."""
         self._write_spine()
-        self._write_container()
+        self._write('container.xml', 'META-INF/container.xml')
         self._write_toc()
         with open(str(self.path / 'mimetype'), 'w') as file:
             file.write('application/epub+zip')
@@ -145,9 +145,6 @@ class Book:
             pages=list(self._flatten(self.root)), images=self.images,
             uuid=uuid.uuid4(), cover=self._cover,
             **self.metadata)
-
-    def _write_container(self):
-        self._write('container.xml', 'META-INF/container.xml')
 
     def _write_toc(self):
         self._write(
