@@ -12,10 +12,11 @@
       <h2>Table of Contents</h2>
       <ol>
       {%- for page in pages recursive %}
-        <li><a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a>
-        {%- if page.children %}
+        <li>
+          <a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a>
+          {%- if page.children %}
           <ol>{{ loop(page.children) }}</ol>
-        {%- endif %}
+          {%- endif %}
         </li>
       {%- endfor %}
       </ol>

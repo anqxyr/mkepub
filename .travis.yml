@@ -5,7 +5,7 @@ python:
 - '3.4'
 - '3.5'
 before_install:
-- sudo apt-get install epubcheck
+- wget "http://security.ubuntu.com/ubuntu/pool/universe/e/epubcheck/epubcheck_4.0.1-2_all.deb" -q0 epubcheck.deb && sudo dpkg -i epubcheck.deb
 install:
 - pip install jinja2
 - pip install -e .
