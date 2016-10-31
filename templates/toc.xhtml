@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en"
+  lang="en">
+  <head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <nav epub:type="toc" id="toc">
+      <h2>Table of Contents</h2>
+      <ol>
+      {%- for page in pages recursive %}
+        <li><a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a>
+        {%- if page.children %}
+          <ol>
+            {{ loop(item.children) }}
+          </ol>
+        {%- endif %}
+      {%- endfor %}
+      </ol>
+    </nav>
+  </body>
+</html>
