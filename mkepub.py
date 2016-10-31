@@ -66,9 +66,9 @@ class Book:
         self._image_id = map('{:03}'.format, itertools.count(1))
 
         self.path = pathlib.Path(self.tempdir.name).resolve()
-        (self.path / 'EPUB/images').mkdir(parents=True)
-        (self.path / 'EPUB/css').mkdir(parents=True)
-        (self.path / 'META-INF').mkdir()
+        for dirname in [
+                'EPUB', 'META-INF', 'EPUB/images', 'EPUB/css', 'EPUB/covers']:
+            (self.path / dirname).mkdir()
 
         self.set_stylesheet('')
         self._cover = None
@@ -98,8 +98,9 @@ class Book:
     def set_cover(self, data):
         """Set the cover image to the given png data."""
         self._cover = 'cover.' + imghdr.what(None, h=data)
-        with open(str(self.path / 'EPUB' / self._cover), 'wb') as file:
+        with open(str(self.path / 'EPUB/covers' / self._cover), 'wb') as file:
             file.write(data)
+        self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 
     def set_stylesheet(self, data):
         """Set the stylesheet to the given css data."""
@@ -139,7 +140,8 @@ class Book:
     def _write_spine(self):
         self._write(
             'package.opf', 'EPUB/package.opf',
-            time=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            title=self.title,
+            date=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
             pages=list(self._flatten(self.root)), images=self.images,
             uuid=uuid.uuid4(), cover=self._cover,
             **self.metadata)

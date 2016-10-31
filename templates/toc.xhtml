@@ -12,7 +12,7 @@
       <h2>Table of Contents</h2>
       <ol>
       {%- for page in pages recursive %}
-        <li><a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a>
+        <li><a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a></li>
         {%- if page.children %}
           <ol>
             {{ loop(item.children) }}
