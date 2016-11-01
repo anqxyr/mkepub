@@ -10,6 +10,6 @@ install:
 - pip install -e .
 - pip install pytest-cov
 - pip install python-coveralls
-script: py.test --cov=jarvis/ --cov-report=term-missing
+script: py.test --cov=mkepub/ --cov-report=term-missing
 after_success:
 - coveralls
