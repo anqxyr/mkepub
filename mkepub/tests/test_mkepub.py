@@ -3,7 +3,7 @@
 
 import mkepub
 import pathlib
-import subprocess
+import epubcheck
 
 ###############################################################################
 
@@ -14,7 +14,11 @@ if not pathlib.Path('test_output/').exists():
 def save_and_check(book):
     name = 'test_output/{}.epub'.format(book.title.lower().replace(' ', '_'))
     book.save(name)
-    subprocess.check_output(['epubcheck', name])
+    r = epubcheck.EpubCheck(name)
+    if not r.valid:
+        for i in r.messages:
+            print(i)
+    assert r.valid
 
 
 def test_book_simple():

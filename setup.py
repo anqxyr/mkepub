@@ -19,7 +19,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5'],
-    py_modules=['mkepub.py'],
+    packages=['mkepub'],
+    package_data={'mkepub': ['templates/*']},
     tests_require=['epubcheck', 'pytest', 'pytest-cov', 'python-coveralls'],
     install_requires=['jinja2'],
 )
