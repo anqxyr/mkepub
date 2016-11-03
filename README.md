@@ -6,6 +6,12 @@
 
 Ever wanted to turn some text into a EPUB, but it seemed like too much of a hassle? This is the library for you.
 
+### Installation
+
+```
+pip3 install --user mkepub
+```
+
 ### Basic Usage
 
 ```python
