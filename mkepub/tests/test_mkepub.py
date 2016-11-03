@@ -7,17 +7,15 @@ import epubcheck
 
 ###############################################################################
 
-if not pathlib.Path('test_output/').exists():
-    pathlib.Path('test_output/').mkdir()
-
 
 def save_and_check(book):
-    name = 'test_output/{}.epub'.format(book.title.lower().replace(' ', '_'))
-    book.save(name)
+    name = 'mkepub/tests/{}.epub'.format(book.title.lower().replace(' ', '_'))
+    path = pathlib.Path(name)
+    if path.exists():
+        path.unlink()
+    book.save(str(path))
     r = epubcheck.EpubCheck(name)
-    if not r.valid:
-        for i in r.messages:
-            print(i)
+    print(r.messages)
     assert r.valid
 
 

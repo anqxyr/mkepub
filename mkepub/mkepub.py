@@ -109,6 +109,8 @@ class Book:
 
     def save(self, filename):
         """Save book to a file."""
+        if pathlib.Path(filename).exists():
+            raise FileExistsError
         self._write_spine()
         self._write('container.xml', 'META-INF/container.xml')
         self._write_toc()
