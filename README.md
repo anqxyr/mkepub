@@ -4,7 +4,7 @@
 
 # mkepub
 
-Ever wanted to quickly take some text and turn it into a EPUB book, but it looked like too much of a hassle? Then this is the library for you.
+Ever wanted to turn some text into a EPUB, but it seemed like too much of a hassle? This is the library for you.
 
 ### Basic Usage
 

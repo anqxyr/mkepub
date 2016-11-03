@@ -1,10 +1,13 @@
 import setuptools
 
+with open('README.md') as f:
+    readme = f.read()
+
 setuptools.setup(
     name='mkepub',
-    version='0.9',
+    version='1.0',
     description='Simple minimalistic library for creating EPUB3 files',
-    long_description='',
+    long_description=readme,
     url='https://github.com/anqxyr/mkepub/',
     author='anqxyr',
     author_email='anqxyr@gmail.com',

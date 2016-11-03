@@ -1,0 +1,6 @@
+ __pycache__/
+ *.egg-info/
+ *.sublime-*
+ *mkepub/tests/*.epub
+ build/
+ dist/ 

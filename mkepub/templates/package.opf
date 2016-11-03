@@ -6,7 +6,7 @@
     <dc:identifier id="uuid">{{ uuid }}</dc:identifier>
     <dc:title>{{ title }}</dc:title>
     <dc:language>{{ lang if lang else 'en' }}</dc:language>
-    <dc:date>{{ date[:10] }}</dc:date>
+    <dc:date>{{ published if published else date[:10] }}</dc:date>
     <meta property="dcterms:modified">{{ date }}</meta>
     {%- if author %}
     <dc:creator>{{ author }}</dc:creator>
