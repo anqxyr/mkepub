@@ -21,7 +21,7 @@ def save_and_check(book):
 
 def test_book_simple():
     book = mkepub.Book(title='Simple')
-    with open('cover.jpg', 'rb') as coverfile:
+    with open('mkepub/tests/cover.jpg', 'rb') as coverfile:
         book.set_cover(coverfile.read())
     book.add_page('Page 1', 'Content of the first page.')
     book.add_page('Page 2', 'Content of the second page.')
