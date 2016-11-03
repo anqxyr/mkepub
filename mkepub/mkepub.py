@@ -5,24 +5,6 @@ Create Epub files.
 
 This code was designed to provide a very simple and straight-forward API for
 creating epub files, by sacrificing most of the versatility of the format.
-
-Example usage:
-
->>> book = Book(title='Example Book', author='John Doe')
->>> with open('cover.png', 'br') as file:
->>>     book.set_cover(file.read())
->>> with open('style.css') as file:
->>>     book.set_stylesheet(file.read())
->>> book.add_page(title='First Page', content='some text')
->>> chapter = book.add_page(title='First Chapter', content='more text')
->>> book.add_page(
->>>     title='Sub-Page 1',
->>>     content='first subpage of the chapter',
->>>     parent=chapter)
->>> with open('image.jpg', 'br') as file:
->>>     book.add_image('image.jpg', file.read())
->>> book.save('example.epub')
-
 """
 
 ###############################################################################
