@@ -9,7 +9,7 @@ of a hassle? This is the library for you.
 Basic Usage
 ~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     import mkepub
 
@@ -20,7 +20,7 @@ Basic Usage
 Advanced Usage
 ~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     import mkepub
 
@@ -52,4 +52,4 @@ Advanced Usage
 .. |Coverage Status| image:: https://coveralls.io/repos/github/anqxyr/mkepub/badge.svg?branch=master
    :target: https://coveralls.io/github/anqxyr/mkepub?branch=master
 .. |license| image:: https://img.shields.io/github/license/anqxyr/mkepub.svg?maxAge=2592000
-   :target: 
+   :target: https://github.com/anqxyr/mkepub/LICENSE

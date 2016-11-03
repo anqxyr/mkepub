@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/anqxyr/mkepub.svg?branch=master)](https://travis-ci.org/anqxyr/mkepub)
 [![Coverage Status](https://coveralls.io/repos/github/anqxyr/mkepub/badge.svg?branch=master)](https://coveralls.io/github/anqxyr/mkepub?branch=master)
-[![license](https://img.shields.io/github/license/anqxyr/mkepub.svg?maxAge=2592000)]()
+[![license](https://img.shields.io/github/license/anqxyr/mkepub.svg?maxAge=2592000)](https://github.com/anqxyr/mkepub/LICENSE)
 
 # mkepub
 
