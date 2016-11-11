@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns:ncx="http://www.daisy.org/z3986/2005/ncx/" xmlns="http://www.daisy.org/z3986/2005/ncx/"
+    version="2005-1" xml:lang="en">
+    <head>
+        <meta name="dtb:uid" content="{{ uuid }}"/>
+        <ncx:meta name="dtb:totalPageCount" content="{{ pages|length }}"/>
+    </head>
+    <docTitle>
+        <text>{{ title }}</text>
+    </docTitle>
+    <navMap>
+        {%- for page in pages recursive %}
+        <navPoint id="id-{{ page.page_id }}" playOrder="{{ page.page_id.lstrip('0') }}">
+            <navLabel>
+                <text>{{ page.title }}</text>
+            </navLabel>
+            <content src="page{{ page.page_id }}.xhtml"/>
+            {%- if page.children %}
+            {{ loop(page.children) }}
+            {%- endif %}
+        </navPoint>
+        {%- endfor %}
+    </navMap>
+</ncx>

@@ -44,6 +44,7 @@ class Book:
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = []
         self.images = []
+        self.uuid = uuid.uuid4()
         self._page_id = map('{:04}'.format, itertools.count(1))
         self._image_id = map('{:03}'.format, itertools.count(1))
 
@@ -74,7 +75,7 @@ class Book:
     def add_image(self, name, data):
         """Add image file."""
         self.images.append(Image(next(self._image_id), name))
-        with open(str(self.path / 'images' / name), 'wb') as file:
+        with open(str(self.path / 'EPUB/images' / name), 'wb') as file:
             file.write(data)
 
     def set_cover(self, data):
@@ -127,12 +128,15 @@ class Book:
             title=self.title,
             date=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
             pages=list(self._flatten(self.root)), images=self.images,
-            uuid=uuid.uuid4(), cover=self._cover,
+            uuid=self.uuid, cover=self._cover,
             **self.metadata)
 
     def _write_toc(self):
         self._write(
             'toc.xhtml', 'EPUB/toc.xhtml', pages=self.root, title=self.title)
+        self._write(
+            'toc.ncx', 'EPUB/toc.ncx',
+            pages=self.root, title=self.title, uuid=self.uuid)
 
     def _flatten(self, tree):
         for item in tree:

@@ -4,8 +4,14 @@
 import mkepub
 import pathlib
 import epubcheck
+import logging
 
 ###############################################################################
+
+logger = logging.getLogger('mkepub_test')
+logging.basicConfig(
+    filename='mkepub/tests/test.log', level=logging.ERROR, format=None)
+logger.setLevel(logging.WARNING)
 
 
 def save_and_check(book):
@@ -15,8 +21,11 @@ def save_and_check(book):
         path.unlink()
     book.save(str(path))
     r = epubcheck.EpubCheck(name)
-    print(r.messages)
+    for m in r.messages:
+        logger.warning('{0.level} {0.location}: {0.message}'.format(m))
     assert r.valid
+
+###############################################################################
 
 
 def test_book_simple():

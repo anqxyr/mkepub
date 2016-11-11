@@ -4,22 +4,26 @@
   unique-identifier="uuid">
   <metadata>
     <dc:identifier id="uuid">{{ uuid }}</dc:identifier>
-    <dc:title>{{ title }}</dc:title>
+    <dc:title>{{ title|escape }}</dc:title>
     <dc:language>{{ lang if lang else 'en' }}</dc:language>
     <dc:date>{{ published if published else date[:10] }}</dc:date>
     <meta property="dcterms:modified">{{ date }}</meta>
     {%- if author %}
-    <dc:creator>{{ author }}</dc:creator>
+    <dc:creator>{{ author|escape }}</dc:creator>
     {%- endif %}
     {%- for author in authors %}
-    <dc:creator>{{ author }}</dc:creator>
+    <dc:creator>{{ author|escape }}</dc:creator>
     {%- endfor %}
+    {%- if description %}
+    <dc:description>{{ description|escape }}</dc:description>
+    {%- endif %}
     {%- if rights %}
-    <dc:rights>{{ rights }}</dc:rights>
+    <dc:rights>{{ rights|escape }}</dc:rights>
     {%- endif %}
   </metadata>
   <manifest>
     <item id="htmltoc" properties="nav" media-type="application/xhtml+xml" href="toc.xhtml"/>
+    <item href="toc.ncx" id="toc" media-type="application/x-dtbncx+xml"/>
     <item media-type="text/css" id="css" href="css/stylesheet.css"/>
     {%- if cover %}
     <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>
@@ -32,7 +36,7 @@
     <item id="id-im{{ image.image_id }}" href="images/{{ image.name }}" media-type="{{ image.name|mediatype }}"/>
     {% endfor %}
   </manifest>
-  <spine>
+  <spine toc="toc">
     {%- if cover %}
     <itemref idref="cover" linear="no"/>
     {%- endif %}
