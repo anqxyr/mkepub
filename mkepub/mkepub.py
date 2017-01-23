@@ -74,7 +74,7 @@ class Book:
     def add_image(self, name, data):
         """Add image file."""
         self.images.append(Image(next(self._image_id), name))
-        with open(str(self.path / 'images' / name), 'wb') as file:
+        with open(str(self.path / 'EPUB/images' / name), 'wb') as file:
             file.write(data)
 
     def set_cover(self, data):
