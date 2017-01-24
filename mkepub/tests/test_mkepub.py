@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """mkepub Test Suite."""
 
-import mkepub
-import pathlib
 import epubcheck
 import logging
+import mkepub
+import pathlib
+import pytest
 
 ###############################################################################
 
@@ -37,6 +38,12 @@ def test_book_simple():
     save_and_check(book)
 
 
+def test_exception_file_exists():
+    book = mkepub.Book('Simple')
+    with pytest.raises(FileExistsError):
+        book.save('mkepub/tests/simple.epub')
+
+
 def test_book_no_cover():
     book = mkepub.Book(title='No Cover')
     book.add_page('Page Only', 'This is all the text.')
@@ -63,3 +70,18 @@ def test_book_nested():
     second_child = book.add_page('Second Child', 'blop', parent)
     book.add_page('Grandkid', 'ooOOoo', second_child)
     save_and_check(book)
+
+
+def test_book_with_images():
+    book = mkepub.Book('Images')
+    book.add_page('Cover Page', '<img src="images/cover.jpg"></img>')
+    with open('mkepub/tests/cover.jpg', 'rb') as file:
+        book.add_image('cover.jpg', file.read())
+    save_and_check(book)
+
+
+def test_unsupported_image_format():
+    book = mkepub.Book('Untitled')
+    book.add_image('bad_image.bmp', b'')
+    with pytest.raises(ValueError):
+        save_and_check(book)

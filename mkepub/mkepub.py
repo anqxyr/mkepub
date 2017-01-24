@@ -24,8 +24,17 @@ import zipfile
 
 ###############################################################################
 
+def mediatype(name):
+    ext = name.split('.')[-1].lower()
+    if ext not in ('png', 'jpg', 'jpeg', 'gif', 'svg'):
+        raise ValueError('Image format "{}" is not supported.'.format(ext))
+    if ext == 'jpg':
+        ext = 'jpeg'
+    return 'image/' + ext
+
+
 env = jinja2.Environment(loader=jinja2.PackageLoader('mkepub'))
-env.filters['mediatype'] = lambda x: 'image/' + x.split('.')[-1]
+env.filters['mediatype'] = mediatype
 
 ###############################################################################
 
