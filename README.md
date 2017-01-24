@@ -25,6 +25,12 @@
 * Probably other issues.
 
 
+### Installation
+
+```
+pip3 install --user mkepub
+```
+
 ### Basic Usage
 
 ```python
