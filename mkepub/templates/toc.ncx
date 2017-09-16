@@ -15,6 +15,14 @@
                 <text>{{ page.title }}</text>
             </navLabel>
             <content src="page{{ page.page_id }}.xhtml"/>
+            {%- for anchor in page.anchors %}
+            <navPoint id="id-{{ page.page_id }}-{{ anchor.anchor_id }}">
+                <navLabel>
+                    <text>{{ anchor.title }}</text>
+                </navLabel>
+                <content src="page{{ page.page_id }}.xhtml#{{ anchor.anchor_id }}"/>
+            </navPoint>
+            {%- endfor %}
             {%- if page.children %}
             {{ loop(page.children) }}
             {%- endif %}

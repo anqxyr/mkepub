@@ -38,7 +38,8 @@ env.filters['mediatype'] = mediatype
 
 ###############################################################################
 
-Page = collections.namedtuple('Page', 'page_id title children')
+Anchor = collections.namedtuple('Anchor', 'anchor_id title')
+Page = collections.namedtuple('Page', 'page_id title anchors children')
 Image = collections.namedtuple('Image', 'image_id name')
 
 
@@ -69,14 +70,24 @@ class Book:
     # Public Methods
     ###########################################################################
 
-    def add_page(self, title, content, parent=None):
+    def add_page(self, title, content, anchors=None, parent=None):
         """
         Add a new page.
 
         The page will be added as a subpage of the parent. If no parent is
         provided, the page will be added to the root of the book.
         """
-        page = Page(next(self._page_id), title, [])
+        if anchors is None:
+            anchors = []
+
+        def mk_anchor(value):
+            if isinstance(value, tuple) and len(value) == 2:
+                return Anchor(value[0], value[1])
+            else:
+                return Anchor(value, value)
+
+        anchors = list(map(mk_anchor, anchors))
+        page = Page(next(self._page_id), title, anchors, [])
         self.root.append(page) if not parent else parent.children.append(page)
         self._write_page(page, content)
         return page

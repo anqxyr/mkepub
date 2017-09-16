@@ -14,6 +14,13 @@
       {%- for page in pages recursive %}
         <li>
           <a href="page{{ page.page_id }}.xhtml">{{ page.title }}</a>
+          {%- if page.anchors %}
+          <ol>
+            {%- for anchor in page.anchors %}
+            <li><a href="page{{ page.page_id }}.xhtml#{{ anchor.anchor_id }}">{{ anchor.title }}</a></li>
+            {%- endfor %}
+          </ol>
+          {%- endif %}
           {%- if page.children %}
           <ol>{{ loop(page.children) }}</ol>
           {%- endif %}
