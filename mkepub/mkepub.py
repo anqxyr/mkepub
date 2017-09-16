@@ -70,7 +70,7 @@ class Book:
     # Public Methods
     ###########################################################################
 
-    def add_page(self, title, content, anchors=None, parent=None):
+    def add_page(self, title, content, parent=None, anchors=None):
         """
         Add a new page.
 
