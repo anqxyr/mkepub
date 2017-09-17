@@ -75,18 +75,26 @@ class Book:
         Add a new page.
 
         The page will be added as a subpage of the parent. If no parent is
-        provided, the page will be added to the root of the book.
+        provided, the page will be added to the root of the book. Additionally,
+        each page can provide a list of anchors which will be visible in the
+        TOC. The anchors take precedence over child pages in the TOC.
+        The anchors can be specified as a list of ids, a list of (id, title)
+        tuples or a dictionary where the keys are the anchor ids and the values
+        the anchor titles.
         """
         if anchors is None:
             anchors = []
 
-        def mk_anchor(value):
-            if isinstance(value, tuple) and len(value) == 2:
-                return Anchor(value[0], value[1])
+        if isinstance(anchors, dict):
+            anchors = anchors.items()
+        elif isinstance(anchors, list) and anchors:
+            if len(anchors[0]) == 1:
+                anchors = list(zip(anchors, anchors))
             else:
-                return Anchor(value, value)
+                anchors = [(element[0], element[1]) for element in anchors]
 
-        anchors = list(map(mk_anchor, anchors))
+        anchors = list(map(lambda item: Anchor(*item), anchors))
+
         page = Page(next(self._page_id), title, anchors, [])
         self.root.append(page) if not parent else parent.children.append(page)
         self._write_page(page, content)
