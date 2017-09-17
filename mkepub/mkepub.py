@@ -78,20 +78,18 @@ class Book:
         provided, the page will be added to the root of the book. Additionally,
         each page can provide a list of anchors which will be visible in the
         TOC. The anchors take precedence over child pages in the TOC.
-        The anchors can be specified as a list of ids, a list of (id, title)
-        tuples or a dictionary where the keys are the anchor ids and the values
-        the anchor titles.
+        The anchors can be specified as a list of (id, title) tuples or a
+        dictionary id: title pairs.
         """
         if anchors is None:
             anchors = []
 
         if isinstance(anchors, dict):
-            anchors = anchors.items()
+            anchors = list(sorted(anchors.items()))
         elif isinstance(anchors, list) and anchors:
-            if len(anchors[0]) == 1:
-                anchors = list(zip(anchors, anchors))
-            else:
-                anchors = [(element[0], element[1]) for element in anchors]
+            anchors = [(element[0], element[1])
+                       for element in anchors
+                       if isinstance(element, tuple) and len(element) >= 2]
 
         anchors = list(map(lambda item: Anchor(*item), anchors))
 

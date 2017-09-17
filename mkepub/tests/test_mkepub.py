@@ -73,14 +73,18 @@ def test_book_nested():
 
 
 def test_book_with_anchors():
-    book = mkepub.Book('Anchors')
-    parent = book.add_page('Parent Page', '0000-0000')
-    book.add_page('First Child', '''
+    text = '''
     <h1 id="anchor-1">Anchor 1</h1> 
     <p> Text for anchor 1 </p>
     <h1 id="anchor-2">Anchor 2</h1>
     <p> Text for anchor 1 </p>
-    ''', parent, anchors=[('anchor-1', 'Anchor 1'), ('anchor-2', 'Anchor 2')])
+    '''
+    book = mkepub.Book('Anchors')
+    parent = book.add_page('Parent Page', '0000-0000')
+    book.add_page('First Child', text, parent,
+                  anchors=[('anchor-1', 'Anchor 1'), ('anchor-2', 'Anchor 2')])
+    book.add_page('Third Child', text, parent,
+                  anchors={'anchor-1': 'Anchor 1', 'anchor-2': 'Anchor 2'})
     save_and_check(book)
 
 
