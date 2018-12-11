@@ -33,8 +33,22 @@ def mediatype(name):
     return 'image/' + ext
 
 
+def fonttype(name):
+    ext = name.split('.')[-1].lower()
+    mimetypes = {
+        'otf': 'application/font-sfnt',
+        'ttf': 'application/font-sfnt',
+        'woff': 'font/woff',
+        'woff2': 'font/woff2',
+    }
+    if ext not in mimetypes.keys():
+        raise ValueError('Font format "{}" is not supported.'.format(ext))
+    return mimetypes[ext]
+
+
 env = jinja2.Environment(loader=jinja2.PackageLoader('mkepub'))
 env.filters['mediatype'] = mediatype
+env.filters['fonttype'] = fonttype
 
 ###############################################################################
 
@@ -52,6 +66,7 @@ class Book:
 
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = []
+        self.fonts = []
         self.images = []
         self.uuid = uuid.uuid4()
         self._page_id = map('{:04}'.format, itertools.count(1))
@@ -84,20 +99,23 @@ class Book:
     def add_image(self, name, data):
         """Add image file."""
         self.images.append(Image(next(self._image_id), name))
-        with open(str(self.path / 'EPUB/images' / name), 'wb') as file:
-            file.write(data)
+        self._add_file(pathlib.Path('images') / name, data)
+
+    def add_font(self, name, data):
+        """Add font file."""
+        self.fonts.append(name)
+        self._add_file(pathlib.Path('fonts') / name, data)
 
     def set_cover(self, data):
         """Set the cover image to the given data."""
         self._cover = 'cover.' + imghdr.what(None, h=data)
-        with open(str(self.path / 'EPUB/covers' / self._cover), 'wb') as file:
-            file.write(data)
+        self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 
     def set_stylesheet(self, data):
         """Set the stylesheet to the given css data."""
-        with open(str(self.path / 'EPUB/css/stylesheet.css'), 'w') as file:
-            file.write(data)
+        self._add_file(
+            pathlib.Path('css') / 'stylesheet.css', data.encode('utf-8'))
 
     def save(self, filename):
         """Save book to a file."""
@@ -121,6 +139,15 @@ class Book:
     # Private Methods
     ###########################################################################
 
+    def _add_file(self, name, data):
+        """Add a file."""
+        filepath = self.path / 'EPUB' / name
+        if not filepath.parent.exists():
+            filepath.parent.mkdir()
+
+        with open(str(filepath), 'wb') as file:
+            file.write(data)
+
     def _write(self, template, path, **data):
         with open(str(self.path / path), 'w') as file:
             file.write(env.get_template(template).render(**data))
@@ -137,7 +164,7 @@ class Book:
             title=self.title,
             date=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
             pages=list(self._flatten(self.root)), images=self.images,
-            uuid=self.uuid, cover=self._cover,
+            fonts=self.fonts, uuid=self.uuid, cover=self._cover,
             **self.metadata)
 
     def _write_toc(self):

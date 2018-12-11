@@ -85,3 +85,22 @@ def test_unsupported_image_format():
     book.add_image('bad_image.bmp', b'')
     with pytest.raises(ValueError):
         save_and_check(book)
+
+
+def test_book_with_font():
+    book = mkepub.Book('Font')
+    book.add_page('Page 1', 'Content')
+    with open('mkepub/tests/LinBiolinum_K.woff', 'rb') as file:
+        book.add_font('LinBiolinum_K.woff', file.read())
+    book.set_stylesheet("""@font-face {
+        font-family: "biolinum";
+        src: url(../fonts/LinBiolinum_K.woff);}""")
+    save_and_check(book)
+
+
+def test_add_file():
+    book = mkepub.Book('File')
+    assert not (book.path / 'files').exists()
+    with open('mkepub/tests/cover.jpg', 'rb') as file:
+        book._add_file('files/cover_1.jpg', file.read())
+    assert (book.path / 'EPUB/files/cover_1.jpg').exists()

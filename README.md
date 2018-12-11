@@ -12,6 +12,7 @@
 * Automatically generated TOC.
 * Support for nested TOC of any depth.
 * Support for embedded images.
+* Support for embedded fonts.
 * In-progress books are stored on disk rather than in memory, enabling creation of large (5000+ pages, 20+ MiBs) epub files.
 * Adherence to the EPUB3 specs.
 * Support for most of the EPUB metadata, including language, subject, description, and rights.
@@ -20,7 +21,6 @@
 
 * No support for custom page filenames or directory structure.
 * No support for reading or editing epub files.
-* No support for font-embedding or most other less commonly used EPUB features.
 * No content validation - using broken or unsupported html code as page content will lead to mkepub successfully creating a .epub file that does not meet EPUB3 specifications.
 * Probably other issues.
 
