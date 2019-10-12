@@ -1,2 +1,4 @@
 [report]
-omit = */templates/* 
+omit =
+    */templates/*
+    mkepub/tests/*

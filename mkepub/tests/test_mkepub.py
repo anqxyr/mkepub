@@ -129,3 +129,12 @@ def test_book_with_dcterms():
         '<meta property="dcterms:audience">everyone</meta>\n'
     ]
     assert_has_contents(book, 'EPUB/package.opf', expected_strings)
+
+    
+def test_mediatype():
+    assert mkepub.mkepub.mediatype('file.png') == 'image/png'
+    assert mkepub.mkepub.mediatype('file.jpg') == 'image/jpeg'
+    assert mkepub.mkepub.mediatype('file.jpeg') == 'image/jpeg'
+    assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
+    assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
+
