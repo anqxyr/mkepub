@@ -6,6 +6,7 @@ import logging
 import mkepub
 import pathlib
 import pytest
+from zipfile import ZipFile
 
 ###############################################################################
 
@@ -15,8 +16,12 @@ logging.basicConfig(
 logger.setLevel(logging.WARNING)
 
 
+def name_for_book(book):
+    return 'mkepub/tests/{}.epub'.format(book.title.lower().replace(' ', '_'))
+
+
 def save_and_check(book):
-    name = 'mkepub/tests/{}.epub'.format(book.title.lower().replace(' ', '_'))
+    name = name_for_book(book)
     path = pathlib.Path(name)
     if path.exists():
         path.unlink()
@@ -25,6 +30,14 @@ def save_and_check(book):
     for m in r.messages:
         logger.warning('{0.level} {0.location}: {0.message}'.format(m))
     assert r.valid
+
+
+def assert_has_contents(book, file, expected_strings):
+    name = name_for_book(book)
+    zipfile = ZipFile(name, 'r')
+    contents = zipfile.read(file)
+    for expected_string in expected_strings:
+        assert bytes(expected_string, 'utf-8') in contents
 
 ###############################################################################
 
@@ -106,9 +119,22 @@ def test_add_file():
     assert (book.path / 'EPUB/files/cover_1.jpg').exists()
 
 
+def test_book_with_dcterms():
+    book = mkepub.Book('DCTerms', dcterms={'available': '5', 'audience': 'everyone'})
+    book.add_page('Page 1', 'Content')
+    save_and_check(book)
+
+    expected_strings = [
+        '<meta property="dcterms:available">5</meta>\n',
+        '<meta property="dcterms:audience">everyone</meta>\n'
+    ]
+    assert_has_contents(book, 'EPUB/package.opf', expected_strings)
+
+    
 def test_mediatype():
     assert mkepub.mkepub.mediatype('file.png') == 'image/png'
     assert mkepub.mkepub.mediatype('file.jpg') == 'image/jpeg'
     assert mkepub.mkepub.mediatype('file.jpeg') == 'image/jpeg'
     assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
     assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
+
