@@ -104,3 +104,11 @@ def test_add_file():
     with open('mkepub/tests/cover.jpg', 'rb') as file:
         book._add_file('files/cover_1.jpg', file.read())
     assert (book.path / 'EPUB/files/cover_1.jpg').exists()
+
+
+def test_mediatype():
+    assert mkepub.mkepub.mediatype('file.png') == 'image/png'
+    assert mkepub.mkepub.mediatype('file.jpg') == 'image/jpeg'
+    assert mkepub.mkepub.mediatype('file.jpeg') == 'image/jpeg'
+    assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
+    assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
