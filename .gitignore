@@ -2,6 +2,7 @@ __pycache__/
 *.egg-info/
 *.sublime-*
 *mkepub/tests/*.epub
+*mkepub/tests/test.log
 build/
 dist/
 .coverage
