@@ -8,6 +8,9 @@
     <dc:language>{{ lang if lang else 'en' }}</dc:language>
     <dc:date>{{ published if published else date[:10] }}</dc:date>
     <meta property="dcterms:modified">{{ date }}</meta>
+    {% if dcterms %}{%- for name, value in dcterms.items() %}
+    <meta property="dcterms:{{ name }}">{{ value }}</meta>
+    {%- endfor %}{% endif %}
     {%- if author %}
     <dc:creator>{{ author|escape }}</dc:creator>
     {%- endif %}
