@@ -95,6 +95,7 @@ class Book:
         self.root.append(page) if not parent else parent.children.append(page)
         self._write_page(page, content)
         return page
+    add_chapter = add_page
 
     def add_image(self, name, data):
         """Add image file."""

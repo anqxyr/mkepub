@@ -68,7 +68,7 @@ def test_book_nested():
     parent = book.add_page('Parent Page', '0000-0000')
     book.add_page('First Child', 'ヽ(。_°)ノ', parent)
     second_child = book.add_page('Second Child', 'blop', parent)
-    book.add_page('Grandkid', 'ooOOoo', second_child)
+    book.add_chapter('Grandkid', 'ooOOoo', second_child)
     save_and_check(book)
 
 
