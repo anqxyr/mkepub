@@ -30,6 +30,8 @@ def mediatype(name):
         raise ValueError('Image format "{}" is not supported.'.format(ext))
     if ext == 'jpg':
         ext = 'jpeg'
+    elif ext == 'svg':
+        ext = 'svg+xml'
     return 'image/' + ext
 
 
