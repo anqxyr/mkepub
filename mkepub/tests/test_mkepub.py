@@ -130,7 +130,7 @@ def test_book_with_dcterms():
     ]
     assert_has_contents(book, 'EPUB/package.opf', expected_strings)
 
-    
+
 def test_mediatype():
     assert mkepub.mkepub.mediatype('file.png') == 'image/png'
     assert mkepub.mkepub.mediatype('file.jpg') == 'image/jpeg'
@@ -138,3 +138,39 @@ def test_mediatype():
     assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
     assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
 
+
+class TestSetCover:
+    def test_set_cover_auto(self, mocker):
+        mocker.patch("mkepub.Book._add_file")
+        mocker.patch("mkepub.Book._write")
+
+        book = mkepub.Book('SetCover')
+
+        with open('mkepub/tests/cover.jpg', 'rb') as file:
+            data = file.read()
+        book.set_cover(data)
+        mkepub.Book._add_file.assert_called_with(pathlib.PosixPath('covers/cover.jpeg'), data)
+        mkepub.Book._write.assert_called_with(mocker.ANY, mocker.ANY, cover='cover.jpeg')
+
+    def test_set_cover_override(self, mocker):
+        mocker.patch("mkepub.Book._add_file")
+        mocker.patch("mkepub.Book._write")
+
+        book = mkepub.Book('SetCover')
+
+        with open('mkepub/tests/cover.jpg', 'rb') as file:
+            data = file.read()
+        book.set_cover(data, extension='png')
+        mkepub.Book._add_file.assert_called_with(pathlib.PosixPath('covers/cover.png'), data)
+        mkepub.Book._write.assert_called_with(mocker.ANY, mocker.ANY, cover='cover.png')
+
+    def test_set_cover_undetectable(self, mocker):
+        mocker.patch("mkepub.Book._add_file")
+        mocker.patch("mkepub.Book._write")
+
+        book = mkepub.Book('SetCover')
+
+        data = b'<svg></svg>'
+        book.set_cover(data, extension='svg')
+        mkepub.Book._add_file.assert_called_with(pathlib.PosixPath('covers/cover.svg'), data)
+        mkepub.Book._write.assert_called_with(mocker.ANY, mocker.ANY, cover='cover.svg')
