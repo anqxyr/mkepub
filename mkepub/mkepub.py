@@ -151,7 +151,7 @@ class Book:
             file.write(data)
 
     def _write(self, template, path, **data):
-        with open(str(self.path / path), 'w') as file:
+        with open(str(self.path / path), 'w', encoding='utf-8') as file:
             file.write(env.get_template(template).render(**data))
 
     def _write_page(self, page, content):
