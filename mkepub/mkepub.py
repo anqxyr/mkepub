@@ -108,9 +108,11 @@ class Book:
         self.fonts.append(name)
         self._add_file(pathlib.Path('fonts') / name, data)
 
-    def set_cover(self, data):
+    def set_cover(self, data, extension=None):
         """Set the cover image to the given data."""
-        self._cover = 'cover.' + imghdr.what(None, h=data)
+        if not extension:
+            extension = imghdr.what(None, h=data)
+        self._cover = 'cover.' + extension
         self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 

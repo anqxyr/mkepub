@@ -22,6 +22,6 @@ setuptools.setup(
         'Programming Language :: Python :: 3.5'],
     packages=['mkepub'],
     package_data={'mkepub': ['templates/*']},
-    tests_require=['epubcheck', 'pytest', 'pytest-cov', 'python-coveralls'],
+    tests_require=['epubcheck', 'pytest', 'pytest-cov', 'pytest-mock', 'python-coveralls'],
     install_requires=['jinja2'],
 )
