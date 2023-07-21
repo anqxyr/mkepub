@@ -1,0 +1,8 @@
+include LICENSE
+include README.rst
+include include *.md
+include setup.py
+recursive-include mkepub *.py
+graft mkpub/template
+graft mkpub/tests
+global-exclude *.py[cod]

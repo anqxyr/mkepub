@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setuptools.setup(
     name='mkepub',
-    version='1.2',
+    version='1.3',
     description='Simple minimalistic library for creating EPUB3 files',
     long_description=readme,
     url='https://github.com/anqxyr/mkepub/',
@@ -23,5 +23,5 @@ setuptools.setup(
     packages=['mkepub'],
     package_data={'mkepub': ['templates/*']},
     tests_require=['epubcheck', 'pytest', 'pytest-cov', 'python-coveralls'],
-    install_requires=['jinja2'],
+    install_requires=['filetype', 'jinja2'],
 )

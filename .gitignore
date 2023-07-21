@@ -5,5 +5,7 @@ __pycache__/
 *mkepub/tests/test.log
 build/
 dist/
+venv/
 .coverage
 .cache
+.eggs/
