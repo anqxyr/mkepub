@@ -11,20 +11,29 @@ creating epub files, by sacrificing most of the versatility of the format.
 # Module Imports
 ###############################################################################
 
+# Python standard modules
 import collections
 import datetime
-import imghdr
 import itertools
-import jinja2
 import pathlib
 import tempfile
 import uuid
 import zipfile
 
+# third-party dependencies
+import jinja2
+
+# PEP 594 proposes deprecation of `imghdr` in Python 3.11
+# https://peps.python.org/pep-0594/#imghdr
+# a suggested replacement is `filetype`
+#import imghdr
+import filetype
+
 
 ###############################################################################
 
 def mediatype(name):
+    # NB: some of this could be replaced by `filetype.guess_mime()`
     ext = name.split('.')[-1].lower()
     if ext not in ('png', 'jpg', 'jpeg', 'gif', 'svg'):
         raise ValueError('Image format "{}" is not supported.'.format(ext))
@@ -110,7 +119,11 @@ class Book:
 
     def set_cover(self, data):
         """Set the cover image to the given data."""
-        self._cover = 'cover.' + imghdr.what(None, h=data)
+        # workaround for PEP 594 deprecation of `imghdr`
+        #extension = imghdr.what(None, h=data)
+        extension = filetype.guess_extension(data)
+
+        self._cover = 'cover.' + extension
         self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 
