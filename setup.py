@@ -12,6 +12,7 @@ setuptools.setup(
     author='anqxyr',
     author_email='anqxyr@gmail.com',
     license='MIT',
+    keywords='epub epub3',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
