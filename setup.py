@@ -1,13 +1,13 @@
+from pathlib import Path
 import setuptools
 
-with open('README.rst') as f:
-    readme = f.read()
 
 setuptools.setup(
     name='mkepub',
     version='1.2',
     description='Simple minimalistic library for creating EPUB3 files',
-    long_description=readme,
+    long_description=Path('README.md').read_text(),
+    long_description_content_type='text/markdown',
     url='https://github.com/anqxyr/mkepub/',
     author='anqxyr',
     author_email='anqxyr@gmail.com',
