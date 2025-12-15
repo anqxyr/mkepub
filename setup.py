@@ -23,5 +23,5 @@ setuptools.setup(
     packages=['mkepub'],
     package_data={'mkepub': ['templates/*']},
     tests_require=['epubcheck', 'pytest', 'pytest-cov', 'python-coveralls'],
-    install_requires=['jinja2'],
+    install_requires=['jinja2', 'puremagic'],
 )
