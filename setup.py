@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setuptools.setup(
     name='mkepub',
-    version='1.2',
+    version='1.2.1',
     description='Simple minimalistic library for creating EPUB3 files',
     long_description=readme,
     url='https://github.com/anqxyr/mkepub/',
