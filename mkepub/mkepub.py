@@ -13,13 +13,13 @@ creating epub files, by sacrificing most of the versatility of the format.
 
 import collections
 import datetime
-import imghdr
 import itertools
 import jinja2
 import pathlib
 import tempfile
 import uuid
 import zipfile
+import puremagic
 
 
 ###############################################################################
@@ -110,7 +110,7 @@ class Book:
 
     def set_cover(self, data):
         """Set the cover image to the given data."""
-        self._cover = 'cover.' + imghdr.what(None, h=data)
+        self._cover = 'cover.' + puremagic.what(None, h=data)
         self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 
