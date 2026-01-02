@@ -14,8 +14,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jinja2 puremagic pytest epubcheck
+          pip install jinja2 puremagic pytest epubcheck pytest-md pytest-emoji
 
       - name: Run tests
-        working-directory: ./mkepub/tests
-        run: pytest -vv
+        uses: pavelzw/pytest-action@v2
+        with:
+          verbose: true
+          emoji: true
+          job-summary: true
+          custom-arguments: '-q'
+          click-to-expand: true
+          report-title: 'Test Report
