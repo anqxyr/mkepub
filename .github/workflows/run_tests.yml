@@ -1,5 +1,5 @@
 name: Run tests
-on: [push]
+on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +12,8 @@ jobs:
           python-version: "3.14"
 
       - name: Install dependencies
+        # See pyproject.toml for the up-to-date list of dependencies
+        # This command is updated manually
         run: |
           python -m pip install --upgrade pip
           pip install jinja2 puremagic pytest epubcheck pytest-md pytest-emoji

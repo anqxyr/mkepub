@@ -11,3 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changelog (#14).
 - pyproject.toml configuration file.
+- support for automated testing via Github Actions.
