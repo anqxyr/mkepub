@@ -24,4 +24,4 @@ jobs:
           job-summary: true
           custom-arguments: '-q'
           click-to-expand: true
-          report-title: 'Test Report
+          report-title: 'Test Report'
