@@ -138,3 +138,29 @@ def test_mediatype():
     assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
     assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
 
+
+def test_cover_from_file():
+    book = mkepub.Book('Cover from file')
+    cover_file = 'mkepub/tests/cover.jpg'
+    book.set_cover_from_file(cover_file)
+    book.add_page('A single page', 'With some text.')
+    save_and_check(book)
+
+
+def test_font_from_file():
+    book = mkepub.Book('Font from file')
+    book.add_page('Page 1', 'Content')
+    font_file = 'mkepub/tests/LinBiolinum_K.woff'
+    book.add_font_from_file(font_file)
+    book.set_stylesheet("""@font-face {
+            font-family: "biolinum";
+            src: url(../fonts/LinBiolinum_K.woff);}""")
+    save_and_check(book)
+
+
+def test_stylesheet_from_file():
+    book = mkepub.Book('Stylesheet from file')
+    book.add_page('Page 1', 'Content')
+    style_file = 'mkepub/tests/cover.jpg'
+    book.set_stylesheet_from_file(style_file)
+    save_and_check(book)

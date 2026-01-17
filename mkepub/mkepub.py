@@ -108,16 +108,32 @@ class Book:
         self.fonts.append(name)
         self._add_file(pathlib.Path('fonts') / name, data)
 
+    def add_font_from_file(self, filepath):
+        file = pathlib.Path(filepath)
+        name = file.stem
+        data = file.read_bytes()
+        self.add_font(name, data)
+
     def set_cover(self, data):
         """Set the cover image to the given data."""
         self._cover = 'cover.' + puremagic.what(None, h=data)
         self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 
+    def set_cover_from_file(self, filepath):
+        file = pathlib.Path(filepath)
+        data = file.read_bytes()
+        self.set_cover(data)
+
     def set_stylesheet(self, data):
         """Set the stylesheet to the given css data."""
         self._add_file(
             pathlib.Path('css') / 'stylesheet.css', data.encode('utf-8'))
+
+    def set_stylesheet_from_file(self, filepath):
+        file = pathlib.Path(filepath)
+        data = file.read_text()
+        self.set_stylesheet(data)
 
     def save(self, filename):
         """Save book to a file."""
