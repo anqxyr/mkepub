@@ -161,6 +161,6 @@ def test_font_from_file():
 def test_stylesheet_from_file():
     book = mkepub.Book('Stylesheet from file')
     book.add_page('Page 1', 'Content')
-    style_file = 'mkepub/tests/cover.jpg'
+    style_file = 'mkepub/tests/stylesheet.css'
     book.set_stylesheet_from_file(style_file)
     save_and_check(book)

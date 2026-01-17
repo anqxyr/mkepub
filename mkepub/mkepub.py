@@ -110,7 +110,7 @@ class Book:
 
     def add_font_from_file(self, filepath):
         file = pathlib.Path(filepath)
-        name = file.stem
+        name = file.name
         data = file.read_bytes()
         self.add_font(name, data)
 
@@ -132,7 +132,7 @@ class Book:
 
     def set_stylesheet_from_file(self, filepath):
         file = pathlib.Path(filepath)
-        data = file.read_text()
+        data = file.read_text('utf-8')
         self.set_stylesheet(data)
 
     def save(self, filename):
