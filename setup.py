@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name='mkepub',
-    version='1.2.1',
+    version='1.2.2',
     description='Simple minimalistic library for creating EPUB3 files',
     long_description=Path('README.md').read_text(),
     long_description_content_type='text/markdown',
