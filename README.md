@@ -43,10 +43,8 @@ import mkepub
 book = mkepub.Book(title='Advanced Example', author='The Author')
 # multiple authors can be specified as a list:
 # mkepub.Book(title='Advanced Example', authors=['The First Author', 'The Second Author'])
-with open('cover.jpg', 'rb') as file:
-    book.set_cover(file.read())
-with open('style.css') as file:
-    book.set_stylesheet(file.read())
+book.set_cover_from_file('cover.jpg')
+book.set_stylesheet_from_file('style.css')
 
 first = book.add_page('Chapter 1', 'And so the book begins.')
 
@@ -60,6 +58,9 @@ book.add_page('Chapter 3: Images', '<img src="images/chapter3.png" alt="You can 
 # as long as you add them to the book:
 with open('chapter3.png', 'rb') as file:
     book.add_image('chapter3.png', file.read())
+
+# you can also add custom fonts to the book
+book.add_font_from_file('your_font.woff')
 
 book.save('advanced.epub')
 ```
