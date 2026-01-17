@@ -103,6 +103,12 @@ class Book:
         self.images.append(Image(next(self._image_id), name))
         self._add_file(pathlib.Path('images') / name, data)
 
+    def add_image_from_file(self, filepath):
+        file = pathlib.Path(filepath)
+        name = file.name
+        data = file.read_bytes()
+        self.add_image(name, data)
+
     def add_font(self, name, data):
         """Add font file."""
         self.fonts.append(name)

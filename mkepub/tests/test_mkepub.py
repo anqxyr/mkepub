@@ -44,8 +44,7 @@ def assert_has_contents(book, file, expected_strings):
 
 def test_book_simple():
     book = mkepub.Book(title='Simple')
-    with open('mkepub/tests/cover.jpg', 'rb') as coverfile:
-        book.set_cover(coverfile.read())
+    book.set_cover_from_file('mkepub/tests/cover.jpg')
     book.add_page('Page 1', 'Content of the first page.')
     book.add_page('Page 2', 'Content of the second page.')
     save_and_check(book)
@@ -88,8 +87,7 @@ def test_book_nested():
 def test_book_with_images():
     book = mkepub.Book('Images')
     book.add_page('Cover Page', '<img src="images/cover.jpg"></img>')
-    with open('mkepub/tests/cover.jpg', 'rb') as file:
-        book.add_image('cover.jpg', file.read())
+    book.add_image_from_file('mkepub/tests/cover.jpg')
     save_and_check(book)
 
 
@@ -103,8 +101,7 @@ def test_unsupported_image_format():
 def test_book_with_font():
     book = mkepub.Book('Font')
     book.add_page('Page 1', 'Content')
-    with open('mkepub/tests/LinBiolinum_K.woff', 'rb') as file:
-        book.add_font('LinBiolinum_K.woff', file.read())
+    book.add_font_from_file('mkepub/tests/LinBiolinum_K.woff')
     book.set_stylesheet("""@font-face {
         font-family: "biolinum";
         src: url(../fonts/LinBiolinum_K.woff);}""")
@@ -137,25 +134,6 @@ def test_mediatype():
     assert mkepub.mkepub.mediatype('file.jpeg') == 'image/jpeg'
     assert mkepub.mkepub.mediatype('file.gif') == 'image/gif'
     assert mkepub.mkepub.mediatype('file.svg') == 'image/svg+xml'
-
-
-def test_cover_from_file():
-    book = mkepub.Book('Cover from file')
-    cover_file = 'mkepub/tests/cover.jpg'
-    book.set_cover_from_file(cover_file)
-    book.add_page('A single page', 'With some text.')
-    save_and_check(book)
-
-
-def test_font_from_file():
-    book = mkepub.Book('Font from file')
-    book.add_page('Page 1', 'Content')
-    font_file = 'mkepub/tests/LinBiolinum_K.woff'
-    book.add_font_from_file(font_file)
-    book.set_stylesheet("""@font-face {
-            font-family: "biolinum";
-            src: url(../fonts/LinBiolinum_K.woff);}""")
-    save_and_check(book)
 
 
 def test_stylesheet_from_file():
