@@ -5,6 +5,7 @@ __pycache__/
 *mkepub/tests/test.log
 build/
 dist/
+.pypirc
 .coverage
 .cache
 /uv.lock
