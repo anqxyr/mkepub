@@ -122,7 +122,7 @@ class Book:
 
     def set_cover(self, data):
         """Set the cover image to the given data."""
-        self._cover = 'cover.' + puremagic.what(None, h=data)
+        self._cover = 'cover' + puremagic.from_string(data)
         self._add_file(pathlib.Path('covers') / self._cover, data)
         self._write('cover.xhtml', 'EPUB/cover.xhtml', cover=self._cover)
 

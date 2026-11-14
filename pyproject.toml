@@ -19,7 +19,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "jinja2>=3.1.6",
-    "puremagic>=1.30",
+    "puremagic>=2.2.1",
 ]
 
 [dependency-groups]
