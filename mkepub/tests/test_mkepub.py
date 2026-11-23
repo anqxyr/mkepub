@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """mkepub Test Suite."""
 
+import datetime
 import epubcheck
 import logging
 import mkepub
 import pathlib
 import pytest
+import re
+import time
 from zipfile import ZipFile
 
 ###############################################################################
@@ -142,3 +145,22 @@ def test_stylesheet_from_file():
     style_file = 'mkepub/tests/stylesheet.css'
     book.set_stylesheet_from_file(style_file)
     save_and_check(book)
+
+
+@pytest.mark.skipif(not hasattr(time, 'tzset'), reason='needs time.tzset')
+def test_modified_date_is_utc(monkeypatch):
+    monkeypatch.setenv('TZ', 'XXX+12')  # 12 hours behind UTC
+    time.tzset()
+    try:
+        book = mkepub.Book('Modified date')
+        book.add_page('Page 1', 'Content')
+        before = datetime.datetime.now(datetime.timezone.utc)
+        save_and_check(book)
+        after = datetime.datetime.now(datetime.timezone.utc)
+    finally:
+        monkeypatch.undo()
+        time.tzset()
+    opf = ZipFile(name_for_book(book)).read('EPUB/package.opf').decode()
+    modified = re.search('"dcterms:modified">(.*)</meta>', opf).group(1)
+    form = '%Y-%m-%dT%H:%M:%SZ'
+    assert before.strftime(form) <= modified <= after.strftime(form)
