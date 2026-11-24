@@ -186,7 +186,8 @@ class Book:
         self._write(
             'package.opf', 'EPUB/package.opf',
             title=self.title,
-            date=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            date=datetime.datetime.now(datetime.timezone.utc).strftime(
+                '%Y-%m-%dT%H:%M:%SZ'),
             pages=list(self._flatten(self.root)), images=self.images,
             fonts=self.fonts, uuid=self.uuid, cover=self._cover,
             **self.metadata)
